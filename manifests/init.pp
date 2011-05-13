@@ -1,24 +1,30 @@
-class cloudstack::mgmt {
-	include cloudstack::no_selinux
+class cloudstack {
+		include cloudstack::no_selinux
 
-	case $operatingsystem {
-		centos,redhat : { 
-			yumrepo{"Cloudstack":
-				baseurl => "http://yumrepo/repositories/rhel/$operatingsystemrelease/stable/oss/",
-				name => "CloudStack",
-				enabled => 1,
-				gpgcheck => 0,
-			}
-		}
-		fedora : {
-			yumrepo{"Cloudstack":
-				baseurl => "http://yumrepo/repositories/fedora/$operatingsystemrelease/stable-2.2/oss/",
+        case $operatingsystem {
+                centos,redhat : {
+                        yumrepo{"Cloudstack":
+                                baseurl => "http://yumrepo/repositories/rhel/$operatingsystemrelease/stable/oss/",
                                 name => "CloudStack",
                                 enabled => 1,
                                 gpgcheck => 0,
-		}
+                        }
+                }
+                fedora : {
+                        yumrepo{"Cloudstack":
+                                baseurl => "http://yumrepo/repositories/fedora/$operatingsystemrelease/stable-2.2/oss/",
+                                name => "CloudStack",
+                                enabled => 1,
+                                gpgcheck => 0,
+                }
 
-	}
+        }
+
+}
+
+class cloudstack::mgmt {
+	include cloudstack
+
 
 	package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
