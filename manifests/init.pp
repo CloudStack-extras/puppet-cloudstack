@@ -22,20 +22,24 @@ class cloudstack {
 
 }
 class cloudstack::nfs-common {
+
 	include cloudstack
 
 	package {nfs-utils: ensure => present}
+
 	service {nfs:
 		ensure => running,
 		enabled => true,
 		hasstatus => true,
 		require => Service[rpcbind],
 	}
+
 	service {rpcbind: 
 		ensure => running,
 		enabled => true,
 		hasstatus => true,
 	}
+
 	file {"/etc/sysconfig/nfs":
 		source => "puppet://puppet/cloudstack/nfs",
 		notify => Service[nfs],
@@ -46,56 +50,67 @@ class cloudstack::nfs-common {
 		port => "111",
 		jump => "ACCEPT",
 	}
+
 	iptables {"tcp111":
 		proto => "tcp",
 		port  => "111",
 		jump => "ACCEPT",
 	}
+
         iptables {"tcp2049":
                 proto => "tcp",
                 port  => "2049",
                 jump => "ACCEPT",
         }		
+
         iptables {"tcp32803":
                 proto => "tcp",
                 port  => "32803",
                 jump => "ACCEPT",
         }
+
         iptables {"udp32769":
                 proto => "udp",
                 port  => "32769",
                 jump => "ACCEPT",
         }
+
         iptables {"tcp892":
                 proto => "tcp",
                 port  => "892",
                 jump => "ACCEPT",
         }
+
         iptables {"udp892":
                 proto => "udp",
                 port  => "892",
                 jump => "ACCEPT",
         }
+
         iptables {"tcp875":
                 proto => "tcp",
                 port  => "875",
                 jump => "ACCEPT",
         }
+
         iptables {"udp875":
                 proto => "udp",
                 port  => "875",
                 jump => "ACCEPT",
         }
+
         iptables {"tcp662":
                 proto => "tcp",
                 port  => "662",
                 jump => "ACCEPT",
         }
+
         iptables {"udp662":
                 proto => "udp",
                 port  => "662",
                 jump => "ACCEPT",
         }
+
 ############# TODO: Provide way of dynamically allocating shares - see NFS patters at puppetlabs for more
 
 }
