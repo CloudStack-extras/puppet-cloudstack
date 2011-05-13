@@ -1,0 +1,9 @@
+This is the CloudStack puppet manifest. 
+The original location for this is: 
+https://gitorious.org/cloudstack-puppet
+
+
+To the extent that this manifest is copyrightable (and that is questionable, as configurations generally aren't) it is licensed under the GPLv3 or at your option any later version. 
+
+For problems or help, please send messages on: 
+https://lists.sourceforge.net/lists/listinfo/cloudstack-devel
