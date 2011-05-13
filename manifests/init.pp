@@ -21,7 +21,23 @@ class cloudstack {
         }
 
 }
+class cloudstack::nfs-common {
+	include cloudstack
 
+	package {nfs-utils: ensure => present}
+	service {nfs:
+		ensure => running,
+		enabled => true,
+		hasstatus => true,
+		require => Service[rpcbind],
+	}
+	service {rpcbind: 
+		ensure => running,
+		enabled => true,
+		hasstatus => true,
+	}
+
+}
 class cloudstack::mgmt {
 	include cloudstack
 
