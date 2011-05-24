@@ -116,7 +116,10 @@ class cloudstack::nfs-common {
 
 }
 
-
+class cloudstack::kvmagent {
+	include cloudstack 
+	package {cloud-agent : ensure => present, require => Yumrepo[CloudStack], }
+}
 
 class cloudstack::mgmt {
 	include cloudstack
