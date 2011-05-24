@@ -16,10 +16,11 @@ class cloudstack {
                                 name => "CloudStack",
                                 enabled => 1,
                                 gpgcheck => 0,
-                }
+                	}
 
-        }
+        	}
 
+	}
 }
 class cloudstack::nfs-common {
 
@@ -111,7 +112,7 @@ class cloudstack::nfs-common {
                 jump => "ACCEPT",
         }
 
-############# TODO: Provide way of dynamically allocating shares - see NFS patters at puppetlabs for more
+############# TODO: Provide way of dynamically allocating shares - see NFS patterns at puppetlabs for more
 
 }
 
