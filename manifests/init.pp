@@ -23,6 +23,9 @@ class cloudstack {
 	}
 }
 class cloudstack::nfs-common {
+#this subclass provides NFS for primary and secondary storage on a single machine.
+#this is not production quality - but useful for a POC/demo/dev/test environment. 
+#you will either want to significantly alter or use your own nfs class
 
 	include cloudstack
 
@@ -33,6 +36,8 @@ class cloudstack::nfs-common {
 		enabled => true,
 		hasstatus => true,
 		require => Service[rpcbind],
+		require => File["/primary"],
+		require => File["/secondary"],
 	}
 
 	service {rpcbind: 
@@ -40,9 +45,21 @@ class cloudstack::nfs-common {
 		enabled => true,
 		hasstatus => true,
 	}
-
+	file {"/primary":
+		ensure => directory,
+		mode => 777,
+	}
+	file {"/secondary":
+		ensure => directory,
+		mode => 777,
+	}
 	file {"/etc/sysconfig/nfs":
 		source => "puppet://puppet/cloudstack/nfs",
+		notify => Service[nfs],
+	}
+
+	file {"/etc/exports":
+		source => "puppet://puppet/cloudstack/exports",
 		notify => Service[nfs],
 	}
 
@@ -111,10 +128,9 @@ class cloudstack::nfs-common {
                 port  => "662",
                 jump => "ACCEPT",
         }
-
-############# TODO: Provide way of dynamically allocating shares - see NFS patterns at puppetlabs for more
-
+	
 }
+
 
 class cloudstack::kvmagent {
 	include cloudstack 
