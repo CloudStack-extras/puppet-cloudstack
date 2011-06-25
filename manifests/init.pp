@@ -178,6 +178,8 @@ class cloudstack::mgmt {
 
 
 #################### MYSQL SECTION - can likely be removed if you are using puppet in production and use your own mysql module #########
+# wondering if i should do this as a separate subclass
+
 	package {mysql-server : ensure => present }
 
 	service {mysqld:
@@ -194,6 +196,13 @@ class cloudstack::mgmt {
 		source => "puppet://puppet/cloudstack/my.cnf"
 		notify => Service[mysqld],
 	}
+
+	exec {"cloud-setup-databases cloud:dbpassword@localhost --deploy-as=root":
+		creates => "/var/lib/mysql/cloud",
+		requires => Package[cloud-client],
+		requires => Package[mysql-server],
+	}
+
 ################## END MYSQL SECTION ###################################################################################################
 		
 
