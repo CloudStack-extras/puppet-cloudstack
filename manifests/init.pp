@@ -144,7 +144,7 @@ class cloudstack::mgmt {
 	package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
 
-########## Requires the iptables module from: 
+########## Requires the iptables module from: http://github.com/camptocamp/puppet-iptables/ 
 
 	iptables { "http":
 		proto => "tcp",
@@ -190,6 +190,10 @@ class cloudstack::mgmt {
                 hasstatus => true, 
                 require => Package[mysql-server],
         }
+	file {"/etc/my.cnf":
+		source => "puppet://puppet/cloudstack/my.cnf"
+		notify => Service[mysqld],
+	}
 ################## END MYSQL SECTION ###################################################################################################
 		
 
