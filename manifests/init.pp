@@ -135,6 +135,20 @@ class cloudstack::nfs-common {
 class cloudstack::kvmagent {
 	include cloudstack 
 	package {cloud-agent : ensure => present, require => Yumrepo[CloudStack], }
+
+	exec { "cloud-setup-agent":
+		creates => "/var/log/cloud/setupAgent.log",
+		requires => Package[cloud-agent],
+		requires => File["/etc/sudoers"],
+		requires => File["/etc/cloud/agent/agent.properties"],
+	}
+
+########### TODO - need to create file stanza for etc/sudoers - need to 
+##########check and see if management actually looks for sudoers as well, 
+######### if so place sudoers in the cloudstack class. 
+########## Also need to create a agent.properties stanza, and likely need to define
+########## IP address or name for management server - and do agent.properties as a template. 
+
 }
 
 class cloudstack::mgmt {
