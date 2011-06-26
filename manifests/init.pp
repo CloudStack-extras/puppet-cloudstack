@@ -155,6 +155,7 @@ class cloudstack::kvmagent {
 		requires => File["/etc/sysconfig/network-scripts/ifcfg-eth0"],
 		requires => File["/etc/hosts"],
 		requires => File["/etc/sysconfig/network"],
+		requires => File["/etc/resolv.conf"],
 		requires => Service["network"],
 
 
@@ -196,6 +197,10 @@ class cloudstack::kvmagent {
 	file { "/etc/hosts":  ## Note this file pulls from facter - you may need to adjust to define this externally
 		content => template("cloudstack/hosts"),
 	} 
+
+	file { "/etc/resolv.conf":
+		content => template("cloudstack/resolv.conf"),
+	}
 
 ### NOTES: This assumes a single NIC (eth0) will be used for CloudStack and ensures that the 
 ### config file is correct syntactically and in place
