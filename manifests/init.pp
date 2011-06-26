@@ -25,8 +25,8 @@ class cloudstack {
 ######### DEFINITIONS ####################
 
 	$cs_mgmt_server = "192.168.203.177"
-	$dns_server_1 = "192.168.203.1"
-	$dns_server_2 = "8.8.8.8"
+	$dns1 = "192.168.203.1"
+	$dns2 = "8.8.8.8"
 	$cs_agent_netmask = "255.255.255.0"
 	
 
