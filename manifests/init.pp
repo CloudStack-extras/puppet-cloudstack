@@ -143,7 +143,11 @@ class cloudstack::mgmt {
 
 	package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
-
+	exec { "cloud-setup-management":
+		creates => "/var/log/cloud/setupManagement.log",
+		requires => Package[cloud-client],
+		requires => File["/var/lib/mysql/cloud"],
+		} 
 ########## Requires the iptables module from: http://github.com/camptocamp/puppet-iptables/ 
 
 	iptables { "http":
@@ -203,6 +207,9 @@ class cloudstack::mgmt {
 		requires => Package[mysql-server],
 	}
 
+	file { "/var/lib/mysql/cloud":
+		ensure => present,
+	}
 ################## END MYSQL SECTION ###################################################################################################
 		
 
