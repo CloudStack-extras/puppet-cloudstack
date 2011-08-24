@@ -301,7 +301,7 @@ class cloudstack::mgmt {
 
 ########## Zone ################
 
-	exec {"curl http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic"
+	exec {"curl http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic":
 		onlyif => "curl http://localhost:8096/?command=listZones | grep -v Zone1"
 	}
 
