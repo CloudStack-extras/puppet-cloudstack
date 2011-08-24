@@ -6,13 +6,13 @@ class cloudstack {
                         yumrepo{"Cloudstack":
                                 baseurl => "http://yumrepo/repositories/rhel/$operatingsystemrelease/stable/oss/",
                                 name => "CloudStack",
-                                enabled => 1,
+                                enable => 1,
                                 gpgcheck => 0,
                         }
                 }
                 fedora : {
                         yumrepo{"Cloudstack":
-                                baseurl => "http://yumrepo/repositories/fedora/$operatingsystemrelease/stable-2.2/oss/",
+                                baseurl => "http://192.168.203.177/foo/",
                                 name => "CloudStack",
                                 enabled => 1,
                                 gpgcheck => 0,
@@ -43,16 +43,14 @@ class cloudstack::nfs-common {
 
 	service {nfs:
 		ensure => running,
-		enabled => true,
+		enable => true,
 		hasstatus => true,
-		require => Service[rpcbind],
-		require => File["/primary"],
-		require => File["/secondary"],
+		require => [ Service[rpcbind], File["/primary"], File["/secondary"] ],
 	}
 
 	service {rpcbind: 
 		ensure => running,
-		enabled => true,
+		enable => true,
 		hasstatus => true,
 	}
 	file {"/primary":
@@ -75,67 +73,67 @@ class cloudstack::nfs-common {
 
 	iptables {"udp111":
 		proto => "udp",
-		port => "111",
+		dport=> "111",
 		jump => "ACCEPT",
 	}
 
 	iptables {"tcp111":
 		proto => "tcp",
-		port  => "111",
+		dport => "111",
 		jump => "ACCEPT",
 	}
 
         iptables {"tcp2049":
                 proto => "tcp",
-                port  => "2049",
+                dport => "2049",
                 jump => "ACCEPT",
         }		
 
         iptables {"tcp32803":
                 proto => "tcp",
-                port  => "32803",
+                dport => "32803",
                 jump => "ACCEPT",
         }
 
         iptables {"udp32769":
                 proto => "udp",
-                port  => "32769",
+                dport => "32769",
                 jump => "ACCEPT",
         }
 
         iptables {"tcp892":
                 proto => "tcp",
-                port  => "892",
+                dport => "892",
                 jump => "ACCEPT",
         }
 
         iptables {"udp892":
                 proto => "udp",
-                port  => "892",
+                dport => "892",
                 jump => "ACCEPT",
         }
 
         iptables {"tcp875":
                 proto => "tcp",
-                port  => "875",
+                dport => "875",
                 jump => "ACCEPT",
         }
 
         iptables {"udp875":
                 proto => "udp",
-                port  => "875",
+                dport => "875",
                 jump => "ACCEPT",
         }
 
         iptables {"tcp662":
                 proto => "tcp",
-                port  => "662",
+                dport => "662",
                 jump => "ACCEPT",
         }
 
         iptables {"udp662":
                 proto => "udp",
-                port  => "662",
+                dport => "662",
                 jump => "ACCEPT",
         }
 	
@@ -224,7 +222,7 @@ class cloudstack::kvmagent {
 ### IP Address thoughts:
 ### Use a template based on /etc/sysconfig/ifcfg-ethX
 ### By default only specify eth0, with liberal commenting about what to do in the event of needing to change our simple configuration (e.g. edit agent.properites, add additional network config, etc. 
-### Require network to be enabled
+### Require network to be enable
 ### Require NetworkManager be disabled (Is it installed by default, do we need to do a case?, perhaps we 'ensure absent') 
 ### Make sure we cycle network after deploying a ifcfg. 
 ### Do we handle creation of cloud-br0? I am thinking not, seems like there's a lot of magic there. For now, lets stay away from that. 
@@ -246,31 +244,31 @@ class cloudstack::mgmt {
 
 	iptables { "http":
 		proto => "tcp",
-		dport => "80",
+		dport=> "80",
 		jump => "ACCEPT",
 	}
 
 	iptables { "http-alt":
 		proto => "tcp",
-		dport => "8080",
+		dport=> "8080",
 		jump => "ACCEPT",
 		}
 
-	iptables { "port-8096":      ###### find out what this port does in cloudstack
+	iptables { "port-8096":      ###### find out what this dportdoes in cloudstack
 		proto => "tcp",
-		dport => "8096",
+		dport=> "8096",
 		jump => "ACCEPT",
 		}
 
 	iptables { "port-8250":     ############ Think this is for cpvm, but check for certain. 
 		proto => "tcp",
-		dport => "8250",
+		dport=> "8250",
 		jump => "ACCEPT",
 		}
 
 	iptables { "port-9090":    ####################### find out what this does in cloudstack
 		proto => "tcp",
-		dport => "9090",
+		dport=> "9090",
 		jump => "ACCEPT",
 		}
 
@@ -291,7 +289,7 @@ class cloudstack::mgmt {
                 require => Package[mysql-server],
         }
 	file {"/etc/my.cnf":
-		source => "puppet://puppet/cloudstack/my.cnf"
+		source => "puppet://puppet/cloudstack/my.cnf",
 		notify => Service[mysqld],
 	}
 
