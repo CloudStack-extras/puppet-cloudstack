@@ -21,6 +21,9 @@ class cloudstack {
         	}
 
 	}
+        file { "/etc/sudoers":
+                source =>  "puppet://puppet/cloudstack/sudoers",
+        }
 
 ######### DEFINITIONS ####################
 
@@ -159,9 +162,6 @@ class cloudstack::kvmagent {
 
 	}
 
-	file { "/etc/sudoers":
-		source =>  "puppet://puppet/cloudstack/sudoers",
-	}
 
 	file { "/etc/cloud/agent/agent.properties": 
 		ensure => present,
