@@ -237,8 +237,7 @@ class cloudstack::mgmt {
 
 	exec { "cloud-setup-management":
 		creates => "/var/log/cloud/setupManagement.log",
-		requires => Package[cloud-client],
-		requires => File["/var/lib/mysql/cloud"],
+		requires => [ Package[cloud-client], File["/var/lib/mysql/cloud"] ],
 		} 
 ########## Requires the iptables module from: http://github.com/camptocamp/puppet-iptables/ 
 
@@ -295,8 +294,7 @@ class cloudstack::mgmt {
 
 	exec {"cloud-setup-databases cloud:dbpassword@localhost --deploy-as=root":
 		creates => "/var/lib/mysql/cloud",
-		requires => Package[cloud-client],
-		requires => Package[mysql-server],
+		requires => [ Package[cloud-client], Package[mysql-server], ],
 	}
 
 	file { "/var/lib/mysql/cloud":
