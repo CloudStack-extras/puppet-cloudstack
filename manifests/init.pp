@@ -23,6 +23,9 @@ class cloudstack {
 	}
         file { "/etc/sudoers":
                 source =>  "puppet://puppet/cloudstack/sudoers",
+		mode => 440,
+		owner => root,
+		group => root,
         }
 
 ######### DEFINITIONS ####################
@@ -149,17 +152,15 @@ class cloudstack::kvmagent {
 
 	exec { "cloud-setup-agent":
 		creates => "/var/log/cloud/setupAgent.log",
-		requires => Package[cloud-agent],
-		requires => Package[NetworkManager],
-		requires => File["/etc/sudoers"],
-		requires => File["/etc/cloud/agent/agent.properties"],
-		requires => File["/etc/sysconfig/network-scripts/ifcfg-eth0"],
-		requires => File["/etc/hosts"],
-		requires => File["/etc/sysconfig/network"],
-		requires => File["/etc/resolv.conf"],
-		requires => Service["network"],
-
-
+		requires => [ Package[cloud-agent], 
+				Package[NetworkManager], 
+				File["/etc/sudoers"], 
+				File["/etc/cloud/agent/agent.properties"],
+				File["/etc/sysconfig/network-scripts/ifcfg-eth0"], 
+				File["/etc/hosts"], 
+				File["/etc/sysconfig/network"], 
+				File["/etc/resolv.conf"], 
+				Service["network"], ]
 	}
 
 
@@ -180,8 +181,7 @@ class cloudstack::kvmagent {
 		ensure => running, 
 		enabed => true,
 		hasstatus => true, ## Is that really true?
-		requires => Package[NetworkManager],
-		requires => File["/etc/sysconfig/network-scripts/ifcfg-eth0"],
+		requires => [ Package[NetworkManager], File["/etc/sysconfig/network-scripts/ifcfg-eth0"], ]
 	}
 	
 	package { NetworkManager:
@@ -208,9 +208,7 @@ class cloudstack::kvmagent {
 
 ######### END AGENT NETWORKING ##############################################################
 
-########### TODO - get an actual /etc/sudoers in place
-##########check and see if management actually looks for sudoers as well, 
-######### if so place sudoers in the cloudstack class. 
+ 
 ########## Also need to create a agent.properties stanza, and likely need to define
 ########## IP address or name for management server - and do agent.properties as a template. 
 ############ Need to do something that will take care of IP configuration
@@ -236,7 +234,7 @@ class cloudstack::mgmt {
 	package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
 	exec { "cloud-setup-management":
-		creates => "/var/log/cloud/setupManagement.log",
+#		creates => "/var/log/cloud/setupManagement.log",
 		onlyif => [ "test -e /var/lib/mysql/cloud", "test -e /etc/sysconfig/cloud-management", "service cloud-management status |grep -v running" ]  
 		#The last check won't work on systemd, need to come up with some alternative
 		} 
@@ -296,9 +294,6 @@ class cloudstack::mgmt {
 		creates => "/var/lib/mysql/cloud",
 	}
 
-	file { "/var/lib/mysql/cloud":
-		ensure => present,
-	}
 ################## END MYSQL SECTION ###################################################################################################
 		
 
