@@ -237,15 +237,15 @@ class cloudstack::mgmt {
 
 	exec { "cloud-setup-management":
 		creates => "/var/log/cloud/setupManagement.log",
-		requires => [ Package[cloud-client], File["/var/lib/mysql/cloud"] ],
+		onlyif => [ "test -e /var/lib/mysql/cloud", "test -e /etc/sysconfig/cloud-management", "service cloud-management status |grep -v running" ]  
+		#The last check won't work on systemd, need to come up with some alternative
 		} 
 ########## Requires the iptables module from: http://github.com/camptocamp/puppet-iptables/ 
 
 	iptables { "http":
 		proto => "tcp",
 		dport=> "80",
-		jump => "ACCEPT",
-	}
+		jump => "ACCEPT",}
 
 	iptables { "http-alt":
 		proto => "tcp",
@@ -294,7 +294,6 @@ class cloudstack::mgmt {
 
 	exec {"cloud-setup-databases cloud:dbpassword@localhost --deploy-as=root":
 		creates => "/var/lib/mysql/cloud",
-		requires => [ Package[cloud-client], Package[mysql-server], ],
 	}
 
 	file { "/var/lib/mysql/cloud":
