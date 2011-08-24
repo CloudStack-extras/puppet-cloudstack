@@ -234,8 +234,9 @@ class cloudstack::mgmt {
 	package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
 	exec { "cloud-setup-management":
-#		creates => "/var/log/cloud/setupManagement.log",
-		onlyif => [ "test -e /var/lib/mysql/cloud", "test -e /etc/sysconfig/cloud-management", "service cloud-management status |grep -v running" ]  
+		onlyif => [ "test -e /var/lib/mysql/cloud", 
+				"test -e /etc/sysconfig/cloud-management", 
+				"service cloud-management status |grep -v running" ]  
 		#The last check won't work on systemd, need to come up with some alternative
 		} 
 ########## Requires the iptables module from: http://github.com/camptocamp/puppet-iptables/ 
@@ -251,11 +252,11 @@ class cloudstack::mgmt {
 		jump => "ACCEPT",
 		}
 
-	iptables { "port-8096":      ###### find out what this dportdoes in cloudstack
-		proto => "tcp",
-		dport=> "8096",
-		jump => "ACCEPT",
-		}
+#	iptables { "port-8096":      ###### this is the unauthenticated API interface - should be locked down by default.
+#		proto => "tcp",
+#		dport=> "8096",
+#		jump => "ACCEPT",
+#		}
 
 	iptables { "port-8250":     ############ Think this is for cpvm, but check for certain. 
 		proto => "tcp",
@@ -296,7 +297,15 @@ class cloudstack::mgmt {
 
 ################## END MYSQL SECTION ###################################################################################################
 		
+################## CloudStack configuration section ####################################################################################
 
+########## Zone ################
+
+	exec {"curl http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic"
+		onlyif => "curl http://localhost:8096/?command=listZones | grep -v Zone1"
+	}
+
+########## Pod #################
 
 }
 
