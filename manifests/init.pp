@@ -301,12 +301,16 @@ class cloudstack::mgmt {
 
 ########## Zone ################
 
-	exec {"curl http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic":
-		onlyif => "curl http://localhost:8096/?command=listZones | grep -v Zone1"
+	exec {"curl 'http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic'":
+		onlyif => "curl 'http://localhost:8096/?command=listZones&available=true' | grep -v Zone1"
 	}
 
 ########## Pod #################
 
+	exec {"curl 'http://localhost:8096?command=createPod&gateway=192.168.203.1&name=Pod1&netmask=255.255.255.0&startip=192.168.203.200&oneid=4&endip=192.168.203.230'"
+		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep -v Zone1", 
+			"curl 'http://localhost:8096/?command=listPods' | grep -v Pod1", ]
+	} 
 }
 
 class cloudstack::no_selinux {
