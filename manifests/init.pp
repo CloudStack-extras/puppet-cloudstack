@@ -307,7 +307,7 @@ class cloudstack::mgmt {
 
 ########## Pod #################
 
-	exec {"curl 'http://localhost:8096?command=createPod&gateway=192.168.203.1&name=Pod1&netmask=255.255.255.0&startip=192.168.203.200&oneid=4&endip=192.168.203.230'":
+	exec {"curl 'http://localhost:8096?command=createPod&gateway=192.168.203.1&name=Pod1&netmask=255.255.255.0&startip=192.168.203.200&zoneid=4&endip=192.168.203.230'":
 		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1", 
 			"curl 'http://localhost:8096/?command=listPods' | grep -v Pod1", ]
 	} 
