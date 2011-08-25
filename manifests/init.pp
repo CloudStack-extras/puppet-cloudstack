@@ -314,7 +314,7 @@ class cloudstack::mgmt {
 
 ########## Cluster ##############
 
-	exec {"curl 'http://localhost:8096?command=createCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=KVM&zoneid=4&podid=1'":
+	exec {"curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=KVM&zoneid=4&podid=1'":
 		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",
                         "curl 'http://localhost:8096/?command=listPods' | grep Pod1", ],
 	}
