@@ -310,7 +310,15 @@ class cloudstack::mgmt {
 	exec {"curl 'http://localhost:8096?command=createPod&gateway=192.168.203.1&name=Pod1&netmask=255.255.255.0&startip=192.168.203.200&zoneid=4&endip=192.168.203.230'":
 		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1", 
 			"curl 'http://localhost:8096/?command=listPods' | grep -v Pod1", ]
-	} 
+	}
+
+########## Cluster ##############
+
+	exec {"curl 'http://localhost:8096?command=createCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=KVM&zoneid=4&podid=1'":
+		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",
+                        "curl 'http://localhost:8096/?command=listPods' | grep Pod1", ],
+	}
+ 
 }
 
 class cloudstack::no_selinux {
