@@ -34,7 +34,12 @@ class cloudstack {
 	$dns1 = "192.168.203.1"
 	$dns2 = "8.8.8.8"
 	$cs_agent_netmask = "255.255.255.0"
-	
+	$cs_sec_storage_nfs_server = "192.168.203.176"
+        $cs_sec_storage_mnt_point = "/secondary"
+	$hvtype = "KVM"
+	$system_tmplt_dl_cmd = "/usr/lib64/cloud/agent/scripts/storage/secondary/cloud-install-sys-tmplt"
+	$sysvm_url_kvm = "http://download.cloud.com/releases/2.2.0/systemvm.qcow2.bz2"
+	$sysvm_url_xen = "http://download.cloud.com/releases/2.2.0/systemvm.vhd.bz2"
 
 
 }
@@ -314,11 +319,19 @@ class cloudstack::mgmt {
 
 ########## Cluster ##############
 
-	exec {"curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=KVM&zoneid=4&podid=1'":
+	exec {"curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=$hvtype&zoneid=4&podid=1'":
 		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",
                         "curl 'http://localhost:8096/?command=listPods' | grep Pod1", ],
 	}
- 
+
+########## SecStorage ############
+
+	exec { "mount $cs_sec_storage_nfs_server:$cs_sec_storage_mnt_point  /mnt && 
+		$system_tmplt_dl_cmd /mnt -u $sysvm_url_kvm -h kvm -F && 
+		curl 'http://localhost:8096/?command=addSecondaryStorage&url=nfs://$cs_sec_storage_nfs_server$cs_sec_storage_mnt_point&zoneid=1' &&
+		touch /var/lib/cloud/ssvm":
+		onlyif => ["test ! -e /var/lib/cloud/ssvm", "curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",]
+	}
 }
 
 class cloudstack::no_selinux {
