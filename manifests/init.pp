@@ -28,14 +28,21 @@ class cloudstack {
 		group => root,
         }
 
+	file { "/etc/hosts":
+		content => template("cloudstack/hosts"),
+	}
+
+	package {wget: ensure => present}   ### Not needed after 2.2.9, see bug 11258
 ######### DEFINITIONS ####################
 
 	$cs_mgmt_server = "192.168.203.177"
-	$dns1 = "192.168.203.1"
-	$dns2 = "8.8.8.8"
+	$internaldns1 = "192.168.203.1"
+	$dns1 = "8.8.8.8"
 	$cs_agent_netmask = "255.255.255.0"
 	$cs_sec_storage_nfs_server = "192.168.203.176"
         $cs_sec_storage_mnt_point = "/secondary"
+	$pri_storage_nfs_server = "192.168.203.176"
+	$pri_storage_mnt_point = "/primary"
 	$hvtype = "KVM"
 	$system_tmplt_dl_cmd = "/usr/lib64/cloud/agent/scripts/storage/secondary/cloud-install-sys-tmplt"
 	$sysvm_url_kvm = "http://download.cloud.com/releases/2.2.0/systemvm.qcow2.bz2"
@@ -197,9 +204,6 @@ class cloudstack::kvmagent {
 		content => template("cloudstack/network"),
 	}
 
-	file { "/etc/hosts":  ## Note this file pulls from facter - you may need to adjust to define this externally
-		content => template("cloudstack/hosts"),
-	} 
 
 	file { "/etc/resolv.conf":
 		content => template("cloudstack/resolv.conf"),
@@ -319,20 +323,29 @@ class cloudstack::mgmt {
 
 ########## Cluster ##############
 
-	exec {"curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=$hvtype&zoneid=4&podid=1'":
+	exec {"curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=${hvtype}&zoneid=4&podid=1'":
 		onlyif => ["curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",
                         "curl 'http://localhost:8096/?command=listPods' | grep Pod1",
 			"curl 'http://localhost:8096/?command=listClusters' | grep -v Cluster1" ],
 	}
 
 ########## SecStorage ############
-
-	exec { "mount $cs_sec_storage_nfs_server:$cs_sec_storage_mnt_point  /mnt && 
-		$system_tmplt_dl_cmd /mnt -u $sysvm_url_kvm -h kvm -F && 
-		curl 'http://localhost:8096/?command=addSecondaryStorage&url=nfs://$cs_sec_storage_nfs_server$cs_sec_storage_mnt_point&zoneid=1' &&
+## NOTE: This will take a LONG time to run. Go get a cup of coffee
+	exec { "mount ${cloudstack::cs_sec_storage_nfs_server}:${cloudstack::cs_sec_storage_mnt_point}  /mnt ; 
+		${cloudstack::system_tmplt_dl_cmd} -m /mnt -u ${cloudstack::sysvm_url_kvm} -h kvm -F ; 
+		curl 'http://localhost:8096/?command=addSecondaryStorage&url=nfs://${cloudstack::cs_sec_storage_nfs_server}${cloudstack::cs_sec_storage_mnt_point}&zoneid=1' ;
 		touch /var/lib/cloud/ssvm":
 		onlyif => ["test ! -e /var/lib/cloud/ssvm", "curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1",]
 	}
+
+########## Primary Storage ########
+### THis needs to add a check for a host to have been added
+	exec { "curl 'http://localhost:8096/?command=createStoragePool&name=PStorage&url=nfs://${cloudstack::pri_storage_nfs_server}${cloudstack::pri_storage_mnt_point}&zoneid=4&podid=1'":
+		onlyif => ["curl 'http://localhost:8096/?command=listPods' | grep Pod1",
+				"curl 'http://localhost:8096/?command=listStoragePools' | grep -v PStorage", ]
+	}
+
+
 }
 
 class cloudstack::no_selinux {
