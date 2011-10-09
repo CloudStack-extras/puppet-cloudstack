@@ -6,7 +6,7 @@
 #
 # Actions:
 #   Install the CloudStack repository: [cloudstack]
-#   Manage sudoers file
+#   Manage sudoers entry for cloud user
 #   Manage hosts file
 #   Turn off selinux
 #   Ensure wget installed
@@ -40,19 +40,9 @@ class cloudstack {
     gpgcheck => 0,
   }
 
-  file { '/etc/sudoers.d/':
-    ensure  => directory,
-    mode    => '0550',
-    owner   => root,
-    group   => root,
-    require => Package[ 'sudo' ]
-  }
-
-  file { '/etc/sudoers.d/cloudstack.sudo':
-    source => "puppet:///puppet/cloudstack/cloudstack.sudo"
-    mode   => '0440',
-    owner  => root,
-    group  => root,
+  file_line { 'cs_sudo_rule'
+    path => '/etc/sudoers',
+    line => 'cloud ALL = NOPASSWD : ALL',
   }
 
   file { '/etc/hosts':
