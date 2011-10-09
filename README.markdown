@@ -1,51 +1,25 @@
-# Puppet Labs Standard Library #
+This is the CloudStack puppet manifest. 
+The original location for this is: 
+https://gitorious.org/cloudstack-puppet
 
-This module provides a "standard library" of resources for developing Puppet
-Modules.  This modules will include the following additions to Puppet
 
- * Stages
- * Facts
- * Functions
- * Defined resource types
- * Types
- * Providers
+To the extent that this manifest is copyrightable (and that is questionable, as configurations generally aren't) it is licensed under the GPLv3 or at your option any later version. 
 
-This module is officially curated and provided by Puppet Labs.  The modules
-Puppet Labs writes and distributes will make heavy use of this standard
-library.
+For problems or help, please send messages on: 
+https://lists.sourceforge.net/lists/listinfo/cloudstack-devel
 
-# Compatibility #
+Test Plan: 
+So this should start from easiest submodules to most complex. 
+So I am testing in this order: 
 
-This module is designed to work with Puppet version 2.6 and later.  It may be
-forked if Puppet 2.7 specific features are added.  There are currently no plans
-for a Puppet 0.25 standard library module.
+NFS server:
+(Can I successfully add primary and secondary storage to an existing cloudstack instance)
 
-# Functions #
+Management Server: 
+Do the packages get installed properly (repos setup?)
+Once installed does database get provisioned
+Once database provisioned does UI come up? 
 
-  Please see `puppet doc -r function` for documentation on each function.  The
-  current list of functions is:
+Agent: 
+Soooo much to test here.....basically does it work. 
 
- * getvar
- * has\_key
- * loadyaml
- * merge.rb
- * validate\_array
- * validate\_bool
- * validate\_hash
- * validate\_re
- * validate\_string
-
-## validate\_hash ##
-
-    $somehash = { 'one' => 'two' }
-    validate\_hash($somehash)
-
-## getvar() ##
-
-This function aims to look up variables in user-defined namespaces within
-puppet.  Note, if the namespace is a class, it should already be evaluated
-before the function is used.
-
-    $namespace = 'site::data'
-    include "${namespace}"
-    $myvar = getvar("${namespace}::myvar")

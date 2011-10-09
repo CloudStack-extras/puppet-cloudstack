@@ -1,11 +1,11 @@
-name    'puppetlabs-stdlib'
-version '2.0.0'
-source 'git://github.com/puppetlabs/puppetlabs-stdlib'
+name    'puppetlabs-cloudstack'
+version '0.0.1'
+source 'git://github.com/puppetlabs/puppetlabs-cloudstack'
 author 'puppetlabs'
 license 'Apache 2.0'
-summary 'Puppet Module Standard Library'
-description 'Standard Library for Puppet Modules'
-project_page 'https://github.com/puppetlabs/puppetlabs-stdlib'
+summary 'CloudStack management module'
+description 'Installation and configuration of all CloudStack components'
+project_page 'https://github.com/puppetlabs/puppetlabs-cloudstack'
 
 ## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'
+dependency 'puppetlabs/stdlib', '>= 2.0.0'
