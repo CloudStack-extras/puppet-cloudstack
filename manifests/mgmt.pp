@@ -1,7 +1,6 @@
 class cloudstack::mgmt {
   include cloudstack
 
-
   package {cloud-client : ensure => present, require => Yumrepo[CloudStack], }
 
   exec { "cloud-setup-management":

@@ -1,3 +1,18 @@
+# Class: cloudstack::kvmagent
+#
+# This class installs the base CloudStack KVM agent
+#
+# Parameters:
+#
+# Actions:
+# Install base cloudstack agent
+# Install Package['cloud-agent']
+# Run script Exec['cloud-setup-agent']
+#
+# Requires:
+#
+# Sample Usage:
+#
 class cloudstack::kvmagent {
   include cloudstack 
   package {cloud-agent : ensure => present, require => Yumrepo[CloudStack], }
