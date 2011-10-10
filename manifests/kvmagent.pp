@@ -15,62 +15,29 @@
 #
 class cloudstack::kvmagent {
   include cloudstack 
-  package {cloud-agent : ensure => present, require => Yumrepo[CloudStack], }
 
-  exec { "cloud-setup-agent":
-    creates => "/var/log/cloud/setupAgent.log",
-    requires => [ Package[cloud-agent],
-      Package[NetworkManager],
-      File["/etc/sudoers"],
-      File["/etc/cloud/agent/agent.properties"]
-      File["/etc/sysconfig/network-scripts/ifcfg-eth0"],
-      File["/etc/hosts"],
-      File["/etc/sysconfig/network"],
-      File["/etc/resolv.conf"],
-      Service["network"],
-    ]
+  package { 'cloud-agent': 
+    ensure  => present, 
+    require => Yumrepo[ 'cloudstack' ], 
+  }
+
+  exec { 'cloud-setup-agent':
+    creates  => '/var/log/cloud/setupAgent.log',
+    requires => [ 
+      Package[   'cloud-agent'                               ],
+      File[      '/etc/cloud/agent/agent.properties'         ],
+      File_line[ 'cs_sudo_rule'                              ],
+      Host[      'localhost'                                 ],
+    ],
   }
 
 
-  file { "/etc/cloud/agent/agent.properties": 
-    ensure => present,
-    requires => Package[cloud-agent],
-    content =>  template("cloudstack/agent.properties")
+  file { '/etc/cloud/agent/agent.properties': 
+    ensure   => present,
+    requires => Package[ 'cloud-agent' ],
+    content  => template( 'cloudstack/agent.properties' ),
   }
 
-######## AGENT NETWORKING SECTION SEE NOTES BEFORE END OF NETWORKING SECTION ############
-
-  file { "/etc/sysconfig/network-scripts/ifcfg-eth0":
-    content => template("cloudstack/ifcfg-eth0"),
-  }
-
-
-  service { network:
-    ensure => running,
-    enabed => true,
-    hasstatus => true, ## Is that really true?
-    requires => [ Package[NetworkManager], File["/etc/sysconfig/network-scripts/ifcfg-eth0"], ]
-  }
-
-  package { NetworkManager:
-    ensure => absent,
-  }
-
-  file { "/etc/sysconfig/network":
-    content => template("cloudstack/network"),
-  }
-
-  file { "/etc/resolv.conf":
-    content => template("cloudstack/resolv.conf"),
-  }
-
-### NOTES: This assumes a single NIC (eth0) will be used for CloudStack and ensures that the 
-### config file is correct syntactically and in place
-### If you wish to use more than a single NIC you will need to edit both the agent.properties
-### file and add additional ifcfg-ethX files to this configuration. 
-### 
-
-######### END AGENT NETWORKING ##############################################################
 
  
 ########## Also need to create a agent.properties stanza, and likely need to define

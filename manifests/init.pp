@@ -23,38 +23,43 @@ class cloudstack {
 
   case $::operatingsystem {
     /(centos|redhat)/: {
-      $baseurl = "http://yumrepo/repositories/rhel/$::operatingsystemrelease/stable/oss/",
+      $baseurl = "http://yumrepo/repositories/rhel/${::operatingsystemrelease}\
+                  /stable/oss/",
     }
     fedora: {
       $baseurl = 'http://192.168.203.177/foo/',
     }
     default: {
-      fail( "Cloudstack module is only supported on CentOS, RedHat, and Fedora-based systems."
+      fail( 'Cloudstack module is only supported on CentOS, RedHat, and \
+            Fedora-based systems.'
     }
   }
 
-  yumrepo{ 'Cloudstack':
+  yumrepo{ 'cloudstack':
     baseurl  => $baseurl,
-    name     => 'CloudStack',
     enabled  => 1,
     gpgcheck => 0,
   }
 
-  file_line { 'cs_sudo_rule'
+  file_line { 'cs_sudo_rule':
     path => '/etc/sudoers',
     line => 'cloud ALL = NOPASSWD : ALL',
   }
 
-  file { '/etc/hosts':
-    content => template( 'cloudstack/hosts' ),
+  host { 'localhost':
+    ensure       => present,
+    ip           => '127.0.0.1',
+    host_aliases => [ 'localhost.localdomain', $::fqdn, $::hostname ],
   }
 
-  package { wget: ensure => present }   ### Not needed after 2.2.9, see bug 11258
+  package { 'wget': ensure => present } # Not needed after 2.2.9, see bug 11258
 
   file { '/etc/selinux/config':
-    source => 'puppet://puppet/cloudstack/config',
+    source => 'puppet:///modules/cloudstack/config',
   }
-  exec { '/usr/sbin/setenforce 0':
+
+  exec { 'disable_selinux':
+    cmd    => '/usr/sbin/setenforce 0',
     onlyif => '/usr/sbin/getenforce | grep Enforcing',
   }
 }
