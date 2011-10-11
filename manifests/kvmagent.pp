@@ -21,9 +21,9 @@ class cloudstack::kvmagent {
     require => Yumrepo[ 'cloudstack' ], 
   }
 
-  exec { 'cloud-setup-agent':
+  exec { '/usr/bin/cloud-setup-agent':
     creates  => '/var/log/cloud/setupAgent.log',
-    requires => [ 
+    require => [ 
       Package[   'cloud-agent'                               ],
       File[      '/etc/cloud/agent/agent.properties'         ],
       File_line[ 'cs_sudo_rule'                              ],
@@ -33,9 +33,9 @@ class cloudstack::kvmagent {
 
 
   file { '/etc/cloud/agent/agent.properties': 
-    ensure   => present,
-    requires => Package[ 'cloud-agent' ],
-    content  => template( 'cloudstack/agent.properties' ),
+    ensure  => present,
+    require => Package[ 'cloud-agent' ],
+    content => template( 'cloudstack/agent.properties' ),
   }
 
 

@@ -9,3 +9,5 @@ project_page 'https://github.com/puppetlabs/puppetlabs-cloudstack'
 
 ## Add dependencies, if any:
 dependency 'puppetlabs/stdlib', '>= 2.0.0'
+dependency 'bobsh/iptables', '>= 1.2.0'
+dependency 'rocha/mysql' '>= 0.1.0'

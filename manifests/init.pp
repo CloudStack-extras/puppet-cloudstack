@@ -22,16 +22,17 @@ class cloudstack {
   include cloudstack::params
 
   case $::operatingsystem {
-    /(centos|redhat)/: {
-      $baseurl = "http://yumrepo/repositories/rhel/${::operatingsystemrelease}\
-                  /stable/oss/",
+    /(CentOS|redhat)/: {
+#      $baseurl = "http://192.168.0.189/yumrepo/repositories/rhel/${::operatingsystemrelease} \
+#                  /stable/oss/"
+       $baseurl = "http://192.168.0.189/~eric/cloudstack_repo/"
     }
     fedora: {
-      $baseurl = 'http://192.168.203.177/foo/',
+      $baseurl = 'http://192.168.203.177/foo/'
     }
     default: {
       fail( 'Cloudstack module is only supported on CentOS, RedHat, and \
-            Fedora-based systems.'
+            Fedora-based systems.' )
     }
   }
 
@@ -59,7 +60,7 @@ class cloudstack {
   }
 
   exec { 'disable_selinux':
-    cmd    => '/usr/sbin/setenforce 0',
-    onlyif => '/usr/sbin/getenforce | grep Enforcing',
+    command => '/usr/sbin/setenforce 0',
+    onlyif  => '/usr/sbin/getenforce | grep Enforcing',
   }
 }
