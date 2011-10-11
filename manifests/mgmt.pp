@@ -79,15 +79,15 @@ class cloudstack::mgmt {
     require => Service[ 'mysqld' ],
   }
 
-  cloudstack::zone { 'zone1': }
-
-########## Pod #################
-
-# exec {'curl 'http://localhost:8096?command=createPod&gateway=192.168.203.1&name=Pod1&netmask=255.255.255.0&startip=192.168.203.200&zoneid=4&endip=192.168.203.230'':
-#   onlyif => [ 'curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1', 
-#     'curl 'http://localhost:8096/?command=listPods' | grep -v Pod1', 
-#   ]
-# }
+  cloudstack::zone { 'zone1': } ->
+  
+  cloudstack::pod { 'pod1':
+    gateway => '192.168.203.1',
+    netmask => '255.255.255.0',
+    startip => '192.168.203.200',
+    endip   => '192.168.203.230',
+    zoneid  => '1',
+  }
 
 ########## Cluster ##############
 
