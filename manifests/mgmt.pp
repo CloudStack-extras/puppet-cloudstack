@@ -21,6 +21,9 @@ class cloudstack::mgmt {
   include cloudstack
   include mysql::server
 
+  $dbstring = inline_template( "<%= \"/usr/bin/cloud-setup-databases \" +
+              \"cloud:dbpassword@localhost --deploy-as=root\" %>" )
+
   package { 'cloud-client':
     ensure  => present,
     require => Yumrepo[ 'cloudstack' ],
@@ -30,10 +33,11 @@ class cloudstack::mgmt {
     ensure    => running,
     enable    => true,
     hasstatus => true, 
+    require   => Package[ 'cloud-client' ],
   }
 
   exec { '/usr/bin/cloud-setup-management':
-    onlyif  => [ '/usr/bin/test -e /etc/sysconfig/cloud-management' ],
+    unless  => [ '/usr/bin/test -e /etc/sysconfig/cloud-management' ],
     require => [ Service[ 'cloud-management' ], 
                  Exec[ 'cloud_setup_databases' ] ],
   }
@@ -70,18 +74,12 @@ class cloudstack::mgmt {
   }
 
   exec { 'cloud_setup_databases':
-    command => 
-      '/usr/bin/cloud-setup-databases cloud:dbpassword@localhost \
-      --deploy-as=root',
+    command => $dbstring,
     creates => '/var/lib/mysql/cloud',
+    require => Service[ 'mysqld' ],
   }
 
   cloudstack::zone { 'zone1': }
-########## Zone ################
-
-# exec {'curl 'http://localhost:8096/?command=createZone&dns1=8.8.8.8&internaldns1=8.8.8.8&name=Zone1&networktype=Basic'':
-#   onlyif => 'curl 'http://localhost:8096/?command=listZones&available=true' | grep -v Zone1'
-# }
 
 ########## Pod #################
 
