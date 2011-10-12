@@ -17,28 +17,32 @@
 #   zone_dns => 'myinternaldns',
 # }
 #
-define cloudstack::pod( 
-  $gateway,
-  $netmask,
-  $startip,
-  $endip,
-  $zoneid
+define cloudstack::cluster( 
+  $clustertype = 'CloudManaged',
+  $hypervisor = $hvtype,
+  $zoneid,
+  $podid
   ) {
+    #### NEED TO VERIFY THAT ZONEID AND PODID ARE VALID!
     $teststring_zone = inline_template( "<%= \"http://localhost:\" +
                    \"${cloudstack::params::mgmt_port}/?command=listZones&\" +
                    \"available=true\" %>" )
     $teststring_pod = inline_template( "<%= \"http://localhost:\" +
                    \"${cloudstack::params::mgmt_port}/?command=listPods&\" +
                    \"available=true\" %>" )
+    $teststring_cluster = inline_template( "<%= \"http://localhost:\" +
+                   \"${cloudstack::params::mgmt_port}/?command=listClusters&\" +
+                   \"available=true\" %>" )
     $reststring = inline_template( "<%= \"http://localhost:\" +
-                   \"${cloudstack::params::mgmt_port}/?command=createPod&\" +
-                   \"gateway=${gateway}&name=${name}&netmask=${netmask}&\" +
-                   \"startip=${startip}&endip=${endip}&zoneid=${zoneid}\" %>" )
+                   \"${cloudstack::params::mgmt_port}/?command=addCluster&\" +
+                   \"clustername=${name}&clustertype=${clustertype}&\" +
+                   \"hypervisor=${hypervisor}&zoneid=${zoneid$}&\" +
+                   \"podid=${podid}\" %>" )
 
     exec { "/usr/bin/curl \'${reststring}\'":
-      unless  => [ 
-        "/usr/bin/curl \'${teststring_zone}\' | grep ${zoneid}",
-        "/usr/bin/curl \'${teststring_pod}\' | grep -v ${pod}", ],
+      onlyif  => [ "/usr/bin/curl \'${teststring_zone}\' | grep ${zoneid}",
+                   "/usr/bin/curl \'${teststring_pod}\' | grep ${podid}",
+                   "/usr/bin/curl \'${teststring_cluster}\' | grep -v ${cluster}" ]
       require => Exec[ 'cloud_setup_databases' ],
     } 
 }

@@ -79,25 +79,7 @@ class cloudstack::mgmt {
     require => Service[ 'mysqld' ],
   }
 
-  cloudstack::zone { 'zone1': } ->
-  
-  cloudstack::pod { 'pod1':
-    gateway => '192.168.203.1',
-    netmask => '255.255.255.0',
-    startip => '192.168.203.200',
-    endip   => '192.168.203.230',
-    zoneid  => '1',
-  }
-
-########## Cluster ##############
-
-# exec {'curl 'http://localhost:8096?command=addCluster&clustername=Cluster1&clustertype=CloudManaged&hypervisor=${hvtype}&zoneid=4&podid=1'':
-#   onlyif => ['curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1',
-#     'curl 'http://localhost:8096/?command=listPods' | grep Pod1',
-#     'curl 'http://localhost:8096/?command=listClusters' | grep -v Cluster1',
-#   ]
-# }
-
+}
 ########## SecStorage ############
 ## NOTE: This will take a LONG time to run. Go get a cup of coffee
 # exec { 'mount ${cloudstack::cs_sec_storage_nfs_server}:${cloudstack::cs_sec_storage_mnt_point}  /mnt ; 
