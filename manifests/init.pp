@@ -21,6 +21,12 @@
 class cloudstack {
   include cloudstack::params
 
+
+  resources hosts { 
+	name => "hosts",
+	purge => true,
+	}
+
   case $::operatingsystem {
     /(CentOS|redhat)/: {
 #      $baseurl = "http://192.168.0.189/yumrepo/repositories/rhel/${::operatingsystemrelease} \
