@@ -56,7 +56,7 @@ class cloudstack {
   host { 'localhost':
     ensure       => present,
     ip           => '127.0.0.1',
-    host_aliases => [ 'localhost.localdomain', $::fqdn, $::hostname ],
+    host_aliases => [ $::fqdn, 'localhost.localdomain', $::hostname ],
   }
 
   package { 'wget': ensure => present } # Not needed after 2.2.9, see bug 11258

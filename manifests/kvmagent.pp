@@ -49,6 +49,27 @@ class cloudstack::kvmagent {
     content => template( 'cloudstack/agent.properties' ),
   }
 
+################## Firewall stuff #########################
+#
+
+  firewall { "first range":
+    proto => 'tcp',
+    dport => '49152-49216',
+    jump => 'ACCEPT',
+  }
+
+  firewall { " 191 VNC rules": 
+    proto => 'tcp',
+    dport => '5900-6100',
+    jump => 'ACCEPT',
+  } 
+
+  firewall { " 192 port 16509":
+    proto => 'tcp',
+    dport => '16509',
+    jump => 'accept',
+  }
+
 
  
 ############ Need to do something that will take care of KVM - make sure module is loaded - need to define what tests cloud-setup-agent actually runs to test for KVM and ensure that we do those tests as well, and rectify if needed (do a reboot?? )
