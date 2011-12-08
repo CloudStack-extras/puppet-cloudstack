@@ -52,18 +52,6 @@ class cloudstack::mgmt {
 ############ firewall section ########################
 ######################################################
 
-  firewall { '000 allow packets with valid state':
-    state => ['RELATED', 'ESTABLISHED'],
-    jump => 'ACCEPT',
-  }
-  firewall { '001 allow icmp':
-    proto => 'icmp',
-    jump => 'ACCEPT',
-  }
-  firewall { '002 allow all to lo interface':
-    iniface => 'lo',
-    jump => 'ACCEPT',
-  }
 
   firewall { '003 allow port 80 in':
     proto => 'tcp',
@@ -71,11 +59,6 @@ class cloudstack::mgmt {
     jump => 'ACCEPT',
   }
 
-  firewall { '100 allow ssh':
-    proto => 'tcp',
-    dport => '22',
-    jump => 'ACCEPT',
-  }
 
   firewall { '120 permit 8080 - web interface':
     proto => 'tcp',
