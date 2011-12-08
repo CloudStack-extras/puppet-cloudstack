@@ -42,42 +42,68 @@ class cloudstack::mgmt {
                  Exec[ 'cloud_setup_databases' ] ],
   }
 
-  iptables { 'http':
-    proto => 'tcp',
-    dport => '80',
-    jump  => 'ACCEPT',
-  }
-
-  iptables { 'http-alt':
-    proto => 'tcp',
-    dport => '8080',
-    jump  => 'ACCEPT',
-  }
-
-###### this is the unauthenticated API interface - should be locked down by default.
-#  iptables { 'port-8096':    
-#    proto => 'tcp',
-#    dport=> '8096',
-#    jump => 'ACCEPT',
-#    }
-
-  iptables { 'port-8250':    #### Think this is for cpvm, but check for certain.
-    proto => 'tcp',
-    dport => '8250',
-    jump  => 'ACCEPT',
-  }
-
-  iptables { 'port-9090':    ############# find out what this does in cloudstack
-    proto => 'tcp',
-    dport => '9090',
-    jump  => 'ACCEPT',
-  }
-
   exec { 'cloud_setup_databases':
     command => $dbstring,
     creates => '/var/lib/mysql/cloud',
     require => Service[ 'mysqld' ],
   }
+
+######################################################
+############ firewall section ########################
+######################################################
+
+  firewall { '000 allow packets with valid state':
+    state => ['RELATED', 'ESTABLISHED'],
+    jump => 'ACCEPT',
+  }
+  firewall { '001 allow icmp':
+    proto => 'icmp',
+    jump => 'ACCEPT',
+  }
+  firewall { '002 allow all to lo interface':
+    iniface => 'lo',
+    jump => 'ACCEPT',
+  }
+
+  firewall { '003 allow port 80 in':
+    proto => 'tcp',
+    dport => '80',
+    jump => 'ACCEPT',
+  }
+
+  firewall { '100 allow ssh':
+    proto => 'tcp',
+    dport => '22',
+    jump => 'ACCEPT',
+  }
+
+  firewall { '120 permit 8080 - web interface':
+    proto => 'tcp',
+    dport => '8080',
+    jump => 'ACCEPT',
+  }
+
+###### this is the unauthed API interface - should be locked down by default. 
+# firewall { '130 permit unauthed API':
+#   proto => 'tcp',
+#   dport => '8096',
+#   jump => 'ACCEPT',
+# }
+#
+
+  
+  firewall { 'port-8250 the CPVM port':    #### Think this is for cpvm, but check for certain.
+    proto => 'tcp',
+    dport => '8250',
+    jump  => 'ACCEPT',
+  }
+
+  firewall { 'port-9090':    ############# find out what this does in cloudstack
+    proto => 'tcp',
+    dport => '9090',
+    jump  => 'ACCEPT',
+  }
+
 
 }
 ########## SecStorage ############
