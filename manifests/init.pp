@@ -68,7 +68,7 @@ class cloudstack {
     command => '/usr/sbin/setenforce 0',
     onlyif  => '/usr/sbin/getenforce | grep Enforcing',
   }
-}
+
 
 
 ################ base firewall ############################
