@@ -22,13 +22,13 @@ class cloudstack {
   include cloudstack::params
 
 
-  resources hosts { 
+  resources { 'hosts': 
 	name => "hosts",
 	purge => true,
 	}
 
   case $::operatingsystem {
-    /(CentOS|redhat)/: {
+    /(CentOS|redhat|Scientific)/: {
 #      $baseurl = "http://192.168.0.189/yumrepo/repositories/rhel/${::operatingsystemrelease} \
 #                  /stable/oss/"
        $baseurl = "http://192.168.0.189/~eric/cloudstack_repo/"
@@ -37,8 +37,7 @@ class cloudstack {
       $baseurl = 'http://192.168.203.177/foo/'
     }
     default: {
-      fail( 'Cloudstack module is only supported on CentOS, RedHat, and \
-            Fedora-based systems.' )
+      fail( 'Cloudstack module is only supported on CentOS, RedHat, and Fedora-based systems.' )
     }
   }
 
@@ -86,6 +85,7 @@ class cloudstack {
   firewall { '002 allow all to lo interface':
     iniface => 'lo',
     jump => 'ACCEPT',
+  }
 
   firewall { '003 allow ssh':
 	dport => '22',
