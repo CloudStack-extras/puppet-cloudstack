@@ -22,8 +22,8 @@ class cloudstack {
   include cloudstack::params
 
 
-  resources { 'hosts': 
-	name => "hosts",
+  resources { 'host': 
+	name => "host",
 	purge => true,
 	}
 
@@ -74,17 +74,13 @@ class cloudstack {
 ################ base firewall ############################
 #
 
-  firewall { '000 allow packets with valid state':
-    state => ['RELATED', 'ESTABLISHED'],
-    jump => 'ACCEPT',
-  }
   firewall { '001 allow icmp':
     proto => 'icmp',
-    jump => 'ACCEPT',
+    action => 'accept',
   }
   firewall { '002 allow all to lo interface':
     iniface => 'lo',
-    jump => 'ACCEPT',
+    action => 'accept',
   }
 
   firewall { '003 allow ssh':

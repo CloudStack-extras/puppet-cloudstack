@@ -56,35 +56,35 @@ class cloudstack::mgmt {
   firewall { '003 allow port 80 in':
     proto => 'tcp',
     dport => '80',
-    jump => 'ACCEPT',
+    jump => 'accept',
   }
 
 
   firewall { '120 permit 8080 - web interface':
     proto => 'tcp',
     dport => '8080',
-    jump => 'ACCEPT',
+    jump => 'accept',
   }
 
 ###### this is the unauthed API interface - should be locked down by default. 
 # firewall { '130 permit unauthed API':
 #   proto => 'tcp',
 #   dport => '8096',
-#   jump => 'ACCEPT',
+#   jump => 'accept',
 # }
 #
 
   
-  firewall { 'port-8250 the CPVM port':    #### Think this is for cpvm, but check for certain.
+  firewall { '8250 CPVM':    #### Think this is for cpvm, but check for certain.
     proto => 'tcp',
     dport => '8250',
-    jump  => 'ACCEPT',
+    action  => 'accept',
   }
 
-  firewall { 'port-9090':    ############# find out what this does in cloudstack
+  firewall { '9090 unk port':    ############# find out what this does in cloudstack
     proto => 'tcp',
     dport => '9090',
-    jump  => 'ACCEPT',
+    action  => 'accept',
   }
 
 
@@ -106,4 +106,4 @@ class cloudstack::mgmt {
 #   ]
 # }
 
-}
+
