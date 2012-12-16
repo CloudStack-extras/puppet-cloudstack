@@ -27,22 +27,9 @@ class cloudstack {
 	purge => true,
 	}
 
-  case $::operatingsystem {
-    /(CentOS|redhat|Scientific)/: {
-#      $baseurl = "http://192.168.0.189/yumrepo/repositories/rhel/${::operatingsystemrelease} \
-#                  /stable/oss/"
-       $baseurl = "http://192.168.0.189/~eric/cloudstack_repo/"
-    }
-    fedora: {
-      $baseurl = 'http://192.168.203.177/foo/'
-    }
-    default: {
-      fail( 'Cloudstack module is only supported on CentOS, RedHat, and Fedora-based systems.' )
-    }
-  }
 
   yumrepo{ 'cloudstack':
-    baseurl  => $baseurl,
+    baseurl  => 'git@github.com:ke4qqq/puppet-cloudstack.git'
     enabled  => 1,
     gpgcheck => 0,
   }

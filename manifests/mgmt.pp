@@ -19,10 +19,26 @@
 #
 class cloudstack::mgmt {
   include cloudstack
-  include mysql::server
+#  include mysql::server   ### We really want to specify this - but in the absence of this
+
+########### MYSQL section #########
+  package { 'mysql-server':
+    ensure => present,
+    }
+
+  service { 'mysqld': 
+    ensure => running,
+    enable => true, 
+    hasstatus => true,
+    require => Package[ 'mysql-server' ],
+   }
+
+######### END MYSQL #####################################
 
   $dbstring = inline_template( "<%= \"/usr/bin/cloud-setup-databases \" +
               \"cloud:dbpassword@localhost --deploy-as=root\" %>" )
+########### If you are using a separate database or different passwords, change it above
+
 
   package { 'cloud-client':
     ensure  => present,
@@ -33,7 +49,7 @@ class cloudstack::mgmt {
     ensure    => running,
     enable    => true,
     hasstatus => true, 
-    require   => Package[ 'cloud-client' ],
+    require   => [Package[ 'cloud-client' ], Service[ 'mysqld' ] ],
   }
 
   exec { '/usr/bin/cloud-setup-management':
