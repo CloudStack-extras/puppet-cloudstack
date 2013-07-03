@@ -35,30 +35,30 @@ class cloudstack::mgmt {
 
 ######### END MYSQL #####################################
 
-  $dbstring = inline_template( "<%= \"/usr/bin/cloud-setup-databases \" +
+  $dbstring = inline_template( "<%= \"/usr/bin/cloudstack-setup-databases \" +
               \"cloud:dbpassword@localhost --deploy-as=root\" %>" )
 ########### If you are using a separate database or different passwords, change it above
 
 
-  package { 'cloud-client':
+  package { 'cloudstack-management':
     ensure  => present,
     require => Yumrepo[ 'cloudstack' ],
   }
 
-  service { 'cloud-management':
+  service { 'cloudstack-management':
     ensure    => running,
     enable    => true,
     hasstatus => true, 
-    require   => [Package[ 'cloud-client' ], Service[ 'mysqld' ] ],
+    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
   }
 
-  exec { '/usr/bin/cloud-setup-management':
-    unless  => [ '/usr/bin/test -e /etc/sysconfig/cloud-management' ],
-    require => [ Service[ 'cloud-management' ], 
-                 Exec[ 'cloud_setup_databases' ] ],
+  exec { '/usr/bin/cloudstack-setup-management':
+    unless  => [ '/usr/bin/test -e /etc/sysconfig/cloudstack-management' ],
+    require => [ Service[ 'cloudstack-management' ], 
+                 Exec[ 'cloudstack_setup_databases' ] ],
   }
 
-  exec { 'cloud_setup_databases':
+  exec { 'cloudstack_setup_databases':
     command => $dbstring,
     creates => '/var/lib/mysql/cloud',
     require => Service[ 'mysqld' ],
@@ -72,14 +72,14 @@ class cloudstack::mgmt {
   firewall { '003 allow port 80 in':
     proto => 'tcp',
     dport => '80',
-    jump => 'accept',
+    action => 'accept',
   }
 
 
   firewall { '120 permit 8080 - web interface':
     proto => 'tcp',
     dport => '8080',
-    jump => 'accept',
+    action => 'accept',
   }
 
 ###### this is the unauthed API interface - should be locked down by default. 
