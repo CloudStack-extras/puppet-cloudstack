@@ -26,12 +26,12 @@ class cloudstack::mgmt {
     ensure => present,
     }
 
-  service { 'mysqld': 
-    ensure => running,
-    enable => true, 
+  service { 'mysqld':
+    ensure    => running,
+    enable    => true,
     hasstatus => true,
-    require => Package[ 'mysql-server' ],
-   }
+    require   => Package[ 'mysql-server' ],
+  }
 
 ######### END MYSQL #####################################
 
@@ -48,14 +48,14 @@ class cloudstack::mgmt {
   service { 'cloudstack-management':
     ensure    => running,
     enable    => true,
-    hasstatus => true, 
+    hasstatus => true,
     require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
   }
 
   exec { '/usr/bin/cloudstack-setup-management':
     unless  => [ '/usr/bin/test -e /etc/sysconfig/cloudstack-management' ],
-    require => [ Service[ 'cloudstack-management' ], 
-                 Exec[ 'cloudstack_setup_databases' ] ],
+    require => [ Service[ 'cloudstack-management' ],
+    Exec[ 'cloudstack_setup_databases' ] ],
   }
 
   exec { 'cloudstack_setup_databases':
@@ -70,45 +70,44 @@ class cloudstack::mgmt {
 
 
   firewall { '003 allow port 80 in':
-    proto => 'tcp',
-    dport => '80',
+    proto  => 'tcp',
+    dport  => '80',
     action => 'accept',
   }
 
 
   firewall { '120 permit 8080 - web interface':
-    proto => 'tcp',
-    dport => '8080',
+    proto  => 'tcp',
+    dport  => '8080',
     action => 'accept',
   }
 
-###### this is the unauthed API interface - should be locked down by default. 
+###### this is the unauthed API interface - should be locked down by default.
 # firewall { '130 permit unauthed API':
 #   proto => 'tcp',
 #   dport => '8096',
-#   jump => 'accept',
+#   jump  => 'accept',
 # }
 #
 
-  
   firewall { '8250 CPVM':    #### Think this is for cpvm, but check for certain.
-    proto => 'tcp',
-    dport => '8250',
-    action  => 'accept',
+    proto  => 'tcp',
+    dport  => '8250',
+    action => 'accept',
   }
 
   firewall { '9090 unk port':    ############# find out what this does in cloudstack
-    proto => 'tcp',
-    dport => '9090',
-    action  => 'accept',
+    proto  => 'tcp',
+    dport  => '9090',
+    action => 'accept',
   }
 
 
 }
 ########## SecStorage ############
 ## NOTE: This will take a LONG time to run. Go get a cup of coffee
-# exec { 'mount ${cloudstack::cs_sec_storage_nfs_server}:${cloudstack::cs_sec_storage_mnt_point}  /mnt ; 
-#   ${cloudstack::system_tmplt_dl_cmd} -m /mnt -u ${cloudstack::sysvm_url_kvm} -h kvm -F ; 
+# exec { 'mount ${cloudstack::cs_sec_storage_nfs_server}:${cloudstack::cs_sec_storage_mnt_point}  /mnt ;
+#   ${cloudstack::system_tmplt_dl_cmd} -m /mnt -u ${cloudstack::sysvm_url_kvm} -h kvm -F ;
 #   curl 'http://localhost:8096/?command=addSecondaryStorage&url=nfs://${cloudstack::cs_sec_storage_nfs_server}${cloudstack::cs_sec_storage_mnt_point}&zoneid=1' ;
 #   touch /var/lib/cloud/ssvm':
 #   onlyif => [ 'test ! -e /var/lib/cloud/ssvm', 'curl 'http://localhost:8096/?command=listZones&available=true' | grep Zone1',]
@@ -118,7 +117,7 @@ class cloudstack::mgmt {
 ### THis needs to add a check for a host to have been added
 # exec { 'curl 'http://localhost:8096/?command=createStoragePool&name=PStorage&url=nfs://${cloudstack::pri_storage_nfs_server}${cloudstack::pri_storage_mnt_point}&zoneid=4&podid=1'':
 #   onlyif => ['curl 'http://localhost:8096/?command=listPods' | grep Pod1',
-#     'curl 'http://localhost:8096/?command=listStoragePools' | grep -v PStorage', 
+#     'curl 'http://localhost:8096/?command=listStoragePools' | grep -v PStorage',
 #   ]
 # }
 
