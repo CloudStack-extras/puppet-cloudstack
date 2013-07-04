@@ -1,106 +1,109 @@
-class cloudstack::nfs-common {
-#this subclass provides NFS for primary and secondary storage on a single machine.
-#this is not production quality - but useful for a POC/demo/dev/test environment. 
-#you will either want to significantly alter or use your own nfs class
+  class cloudstack::nfs-common {
+  # this subclass provides NFS for primary and secondary storage
+  # on a single machine. this is not production quality - but useful
+  # for a POC/demo/dev/test environment.
+  #you will either want to significantly alter or use your own nfs class
 
   include cloudstack
 
-  package {nfs-utils: ensure => present}
-
-  service {nfs:
-    ensure => running,
-    enable => true,
-    hasstatus => true,
-    require => [ Service[rpcbind], File["/primary"], File["/secondary"] ],
+  package {'nfs-utils':
+    ensure => present
   }
 
-  service {rpcbind: 
-    ensure => running,
-    enable => true,
+  service {'nfs':
+    ensure    => running,
+    enable    => true,
+    hasstatus => true,
+    require   => [ Service[rpcbind], File['/primary'], File['/secondary'] ],
+  }
+
+  service {'rpcbind':
+    ensure    => running,
+    enable    => true,
     hasstatus => true,
   }
-  file {"/primary":
+  file {'/primary':
     ensure => directory,
-    mode => 777,
+    mode   => '0777',
   }
-  file {"/secondary":
+  file {'/secondary':
     ensure => directory,
-    mode => 777,
+    mode   => '0777',
   }
-  file {"/etc/sysconfig/nfs":
-    source => "puppet://puppet/cloudstack/nfs",
+  file {'/etc/sysconfig/nfs':
+    source => 'puppet:///modules/cloudstack/nfs',
     notify => Service[nfs],
   }
 
-  file {"/etc/exports":
-    source => "puppet://puppet/cloudstack/exports",
+  file {'/etc/exports':
+    source => 'puppet:///modules/cloudstack/exports',
     notify => Service[nfs],
   }
 
-  iptables {"udp111":
-    proto => "udp",
-    dport=> "111",
-    jump => "ACCEPT",
+  firewall {'111 udp':
+    proto  => 'udp',
+    dport  => '111',
+    action => 'accept',
   }
 
-  iptables {"tcp111":
-    proto => "tcp",
-    dport => "111",
-    jump => "ACCEPT",
+  firewall {'111 tcp':
+    proto  => 'tcp',
+    dport  => '111',
+    action => 'accept',
   }
 
-  iptables {"tcp2049":
-          proto => "tcp",
-          dport => "2049",
-          jump => "ACCEPT",
+  firewall {'2049 tcp':
+    proto  => 'tcp',
+    dport  => '2049',
+    action => 'accept',
   }
 
-  iptables {"tcp32803":
-          proto => "tcp",
-          dport => "32803",
-          jump => "ACCEPT",
+  firewall {'32803 tcp':
+    proto  => 'tcp',
+    dport  => '32803',
+    action => 'accept',
   }
 
-  iptables {"udp32769":
-          proto => "udp",
-          dport => "32769",
-          jump => "ACCEPT",
+  firewall {'32769 udp':
+    proto  => 'udp',
+    dport  => '32769',
+    action => 'accept',
   }
 
-  iptables {"tcp892":
-          proto => "tcp",
-          dport => "892",
-          jump => "ACCEPT",
+  firewall {'892 tcp':
+    proto  => 'tcp',
+    dport  => '892',
+    action => 'accept',
   }
 
-  iptables {"udp892":
-          proto => "udp",
-          dport => "892",
-          jump => "ACCEPT",
+  firewall {'892 udp':
+    proto  => 'udp',
+    dport  => '892',
+    action => 'accept',
   }
 
-  iptables {"tcp875":
-          proto => "tcp",
-          dport => "875",
-          jump => "ACCEPT",
+  firewall {'875 tcp':
+    proto  => 'tcp',
+    dport  => '875',
+    action => 'accept',
   }
 
-  iptables {"udp875":
-          proto => "udp",
-          dport => "875",
-          jump => "ACCEPT",
+  firewall {'875 udp':
+    proto  => 'udp',
+    dport  => '875',
+    action => 'accept';,
   }
 
-  iptables {"tcp662":
-          proto => "tcp",
-          dport => "662",
-          jump => "ACCEPT",
+  firewall {'662 tcp':
+    proto  => 'tcp',
+    dport  => '662',
+    action => 'accept',
   }
 
-  iptables {"udp662":
-          proto => "udp",
-          dport => "662",
-          jump => "ACCEPT",
+  firewall {'662 udp':
+    proto  => 'udp',
+    dport  => '662',
+    action => 'accept',
   }
 
 }
