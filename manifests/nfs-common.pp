@@ -91,7 +91,7 @@
   firewall {'875 udp':
     proto  => 'udp',
     dport  => '875',
-    action => 'accept';,
+    action => 'accept',
   }
 
   firewall {'662 tcp':
