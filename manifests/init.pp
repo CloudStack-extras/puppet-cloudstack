@@ -29,7 +29,8 @@ class cloudstack {
 
 
   yumrepo{ 'cloudstack':
-    baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.1/',
+    baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.2/'
+    # baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.1/',
     # baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.0/',
     enabled  => 1,
     gpgcheck => 0,
