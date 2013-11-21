@@ -16,58 +16,58 @@
 class cloudstack::kvmagent {
   include cloudstack 
 
-  package { 'cloud-agent': 
+  package { 'cloudstack-agent': 
     ensure  => present, 
     require => Yumrepo[ 'cloudstack' ], 
   }
 
-  package { 'NetworkManager': 
+  package { 'NetworkManager':
     ensure => absent;
   }
 
-  service { 'network': 
+  service { 'network':
     ensure => running,
-    enabled => true, 
     hasstatus => true,
-    requires => Package[ 'cloud-agent' ],
+    require => Package[ 'cloudstack-agent' ],
   } 
 
-  exec { '/usr/bin/cloud-setup-agent':
-    creates  => '/var/log/cloud/setupAgent.log',
-    require => [ 
-      Package[   'cloud-agent'                               ],
-      File[      '/etc/cloud/agent/agent.properties'         ],
-      File_line[ 'cs_sudo_rule'                              ],
-      Host[      'localhost'                                 ],
-    ],
-  }
+  # Needs params 
+  #exec { '/usr/bin/cloudstack-setup-agent':
+  #  creates  => '/var/log/cloud/setupAgent.log',
+  #  require => [ 
+  #    Package[   'cloudstack-agent'                               ],
+  #    File[      '/etc/cloudstack/agent/agent.properties'         ],
+  #    File_line[ 'cs_sudo_rule'                              ],
+  #    Host[      'localhost'                                 ],
+  #  ],
+  #}
 
 
-  file { '/etc/cloud/agent/agent.properties': 
+  file { '/etc/cloudstack/agent/agent.properties': 
     ensure  => present,
-    require => Package[ 'cloud-agent' ],
+    require => Package[ 'cloudstack-agent' ],
     content => template( 'cloudstack/agent.properties' ),
   }
 
 ################## Firewall stuff #########################
 #
 
-  firewall { "first range":
+  firewall { "001 first range ":
     proto => 'tcp',
     dport => '49152-49216',
-    jump => 'ACCEPT',
+    action => 'accept',
   }
 
-  firewall { " 191 VNC rules": 
+  firewall { "191 VNC rules":
     proto => 'tcp',
     dport => '5900-6100',
-    jump => 'ACCEPT',
+    action => 'accept',
   } 
 
-  firewall { " 192 port 16509":
+  firewall { "192 port 16509":
     proto => 'tcp',
     dport => '16509',
-    jump => 'accept',
+    action => 'accept',
   }
 
 

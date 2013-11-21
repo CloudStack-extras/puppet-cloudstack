@@ -29,7 +29,8 @@ class cloudstack {
 
 
   yumrepo{ 'cloudstack':
-    baseurl  => 'git@github.com:ke4qqq/puppet-cloudstack.git'
+    baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.1/',
+    # baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.0/',
     enabled  => 1,
     gpgcheck => 0,
   }
