@@ -5,7 +5,7 @@
 # Parameters:
 # zone_dns - The external DNS server
 # zone_internal_dns - Internal DNS server
-# networktype - Network type to use for zone.  Valid options are 
+# networktype - Network type to use for zone.  Valid options are
 #
 # Actions:
 #
@@ -17,7 +17,7 @@
 #   zone_dns => 'myinternaldns',
 # }
 #
-define cloudstack::pod( 
+define cloudstack::pod(
   $gateway,
   $netmask,
   $startip,
@@ -36,9 +36,10 @@ define cloudstack::pod(
                    \"startip=${startip}&endip=${endip}&zoneid=${zoneid}\" %>" )
 
     exec { "/usr/bin/curl \'${reststring}\'":
-      unless  => [ 
+      unless  => [
         "/usr/bin/curl \'${teststring_zone}\' | grep ${zoneid}",
-        "/usr/bin/curl \'${teststring_pod}\' | grep -v ${pod}", ],
+        "/usr/bin/curl \'${teststring_pod}\' | grep -v ${pod}",
+      ],
       require => Exec[ 'cloud_setup_databases' ],
-    } 
+    }
 }

@@ -22,18 +22,18 @@ class cloudstack {
   include cloudstack::params
 
 
-  resources { 'host': 
-	name => "host",
-	purge => true,
-	}
+  resources { 'host':
+    name  => 'host',
+    purge => true,
+  }
 
 
   yumrepo{ 'cloudstack':
-    baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.2/'
+    baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.2/',
     # baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.1/',
     # baseurl  => 'http://cloudstack.apt-get.eu/rhel/4.0/',
-    enabled  => 1,
-    gpgcheck => 0,
+    enabled  => '1',
+    gpgcheck => '0',
   }
 
   file_line { 'cs_sudo_rule':
@@ -64,17 +64,16 @@ class cloudstack {
 #
 
   firewall { '001 allow icmp':
-    proto => 'icmp',
+    proto  => 'icmp',
     action => 'accept',
   }
   firewall { '002 allow all to lo interface':
     iniface => 'lo',
-    action => 'accept',
+    action  => 'accept',
   }
 
   firewall { '003 allow ssh':
-	dport => '22',
-        proto => 'tcp',
+    dport => '22',
+    proto => 'tcp',
   }
-
 }

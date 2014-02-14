@@ -19,7 +19,8 @@
 #
 class cloudstack::mgmt {
   include cloudstack
-#  include mysql::server   ### We really want to specify this - but in the absence of this
+#  include mysql::server   #
+## We really want to specify this - but in the absence of this
 
 ########### MYSQL section #########
   package { 'mysql-server':
@@ -37,7 +38,7 @@ class cloudstack::mgmt {
 
   $dbstring = inline_template( "<%= \"/usr/bin/cloudstack-setup-databases \" +
               \"cloud:dbpassword@localhost --deploy-as=root\" %>" )
-########### If you are using a separate database or different passwords, change it above
+# If you are using a separate database or different passwords, change it above
 
 
   package { 'cloudstack-management':
@@ -119,7 +120,7 @@ class cloudstack::mgmt {
     action => 'accept',
   }
 
-  firewall { '9090 unk port':    ############# find out what this does in cloudstack
+  firewall { '9090 unk port':    ######## find out what this does in cloudstack
     proto  => 'tcp',
     dport  => '9090',
     action => 'accept',
@@ -143,5 +144,3 @@ class cloudstack::mgmt {
 #     'curl 'http://localhost:8096/?command=listStoragePools' | grep -v PStorage',
 #   ]
 # }
-
-
