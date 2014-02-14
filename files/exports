@@ -1,0 +1,2 @@
+/primary *(rw,async,no_root_squash)
+/secondary *(rw,async,no_root_squash)
