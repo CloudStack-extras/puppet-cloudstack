@@ -77,6 +77,7 @@ class cloudstack::mgmt {
     mode   => '0777',
     owner  => '0',
     target => 'tomcat6-nonssl.conf',
+    require => Package[ 'cloudstack-management' ],
   }
 
   file { '/usr/share/cloudstack-management/conf/server.xml':
@@ -85,6 +86,7 @@ class cloudstack::mgmt {
     mode   => '0777',
     owner  => '0',
     target => 'server-nonssl.xml',
+    require => Package[ 'cloudstack-management' ],
   }
 
 
