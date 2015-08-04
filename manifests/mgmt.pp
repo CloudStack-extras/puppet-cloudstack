@@ -50,7 +50,7 @@ class cloudstack::mgmt {
     ensure    => running,
     enable    => true,
     hasstatus => true,
-    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ], File[ '/etc/cloudstack/management/tomcat6.conf' ] ],
+    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ], File[ '/etc/cloudstack/management/tomcat6.conf' ], File[ '/usr/share/cloudstack-management/conf/server.xml' ] ],
   }
 
   exec { '/usr/bin/cloudstack-setup-management':
