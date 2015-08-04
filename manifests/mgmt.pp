@@ -18,7 +18,7 @@
 # This class should not be included directly.  It is called from other modules.
 #
 class cloudstack::mgmt {
-  include cloudstack
+
 #  include mysql::server   #
 ## We really want to specify this - but in the absence of this
 
