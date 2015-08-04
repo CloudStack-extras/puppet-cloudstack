@@ -46,7 +46,7 @@ class cloudstack::mgmt {
     require => Yumrepo[ 'cloudstack' ],
   }
 
-    service { 'cloudstack-management':
+  service { 'cloudstack-management':
     ensure    => running,
     enable    => true,
     hasstatus => true,
