@@ -54,6 +54,10 @@ class cloudstack (
     path => '/etc/sudoers',
     line => 'cloud ALL = NOPASSWD : ALL',
   }
+  file_line { 'cloud tty':
+    path => '/etc/sudoers',
+    line => 'Defaults:cloud !requiretty',
+  }
 
   host { 'localhost':
     ensure       => present,
