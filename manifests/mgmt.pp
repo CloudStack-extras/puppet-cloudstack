@@ -46,11 +46,11 @@ class cloudstack::mgmt {
     require => Yumrepo[ 'cloudstack' ],
   }
 
-  service { 'cloudstack-management':
+    service { 'cloudstack-management':
     ensure    => running,
     enable    => true,
     hasstatus => true,
-    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
+    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ], File[ '/etc/cloudstack/management/tomcat6.conf' ] ],
   }
 
   exec { '/usr/bin/cloudstack-setup-management':
