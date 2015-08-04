@@ -18,8 +18,22 @@
 # Sample Usage:
 # This class should not be included directly.  It is called from other modules.
 #
-class cloudstack {
-  include cloudstack::params
+class cloudstack (
+
+  $mgmt_port = $cloudstack::params::mgmt_port,
+  $cs_mgmt_server = $cloudstack::params::cs_mgmt_server,
+  $cs_agent_netmask = $cloudstack::params::cs_agent_netmask,
+  $cs_sec_storage_nfs_server = $cloudstack::params::cs_sec_storage_nfs_server,
+  $cs_sec_storage_mnt_point = $cloudstack::params::cs_sec_storage_mnt_point,
+  $pri_storage_nfs_server = $cloudstack::params::pri_storage_nfs_server,
+  $pri_storage_mnt_point = $cloudstack::params::pri_storage_mnt_point,
+  $hvtype = $cloudstack::params::hvtype,
+  $system_tmplt_dl_cmd = $cloudstack::params::system_tmplt_dl_cmd,
+  $sysvm_url_kvm = $cloudstack::params::sysvm_url_kvm,
+  $sysvm_url_xen = $cloudstack::params::sysvm_url_xen,
+
+
+) inherits cloudstack::params {
 
 
   resources { 'host':
