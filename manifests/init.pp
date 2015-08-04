@@ -18,7 +18,7 @@
 # Sample Usage:
 # This class should not be included directly.  It is called from other modules.
 #
-class cloudstack (
+class cloudstack(
 
   $mgmt_port = $cloudstack::params::mgmt_port,
   $cs_mgmt_server = $cloudstack::params::cs_mgmt_server,
