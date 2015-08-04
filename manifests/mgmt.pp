@@ -62,7 +62,7 @@ class cloudstack::mgmt {
   exec { 'cloudstack_setup_databases':
     command => $dbstring,
     creates => '/var/lib/mysql/cloud',
-    require => Service[ 'mysqld' ],
+    require => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
   }
 
 
