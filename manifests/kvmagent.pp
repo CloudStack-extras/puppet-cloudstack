@@ -14,7 +14,6 @@
 # Sample Usage:
 #
 class cloudstack::kvmagent {
-  include cloudstack
 
   package { 'cloudstack-agent':
     ensure  => present,
