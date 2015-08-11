@@ -18,7 +18,7 @@
 # This class should not be included directly.  It is called from other modules.
 #
 class cloudstack::mgmt {
-  include cloudstack
+
 #  include mysql::server   #
 ## We really want to specify this - but in the absence of this
 
@@ -50,7 +50,7 @@ class cloudstack::mgmt {
     ensure    => running,
     enable    => true,
     hasstatus => true,
-    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
+    require   => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ], File[ '/etc/cloudstack/management/tomcat6.conf' ], File[ '/usr/share/cloudstack-management/conf/server.xml' ] ],
   }
 
   exec { '/usr/bin/cloudstack-setup-management':
@@ -62,7 +62,7 @@ class cloudstack::mgmt {
   exec { 'cloudstack_setup_databases':
     command => $dbstring,
     creates => '/var/lib/mysql/cloud',
-    require => Service[ 'mysqld' ],
+    require => [Package[ 'cloudstack-management' ], Service[ 'mysqld' ] ],
   }
 
 
@@ -77,6 +77,7 @@ class cloudstack::mgmt {
     mode   => '0777',
     owner  => '0',
     target => 'tomcat6-nonssl.conf',
+    require => Package[ 'cloudstack-management' ],
   }
 
   file { '/usr/share/cloudstack-management/conf/server.xml':
@@ -85,6 +86,7 @@ class cloudstack::mgmt {
     mode   => '0777',
     owner  => '0',
     target => 'server-nonssl.xml',
+    require => Package[ 'cloudstack-management' ],
   }
 
 

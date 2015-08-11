@@ -1,0 +1,10 @@
+.vagrant
+puppet.conf*
+auth.conf*
+fileserver.conf*
+*.swp
+*.swo
+tests
+environments
+.idea
+*~

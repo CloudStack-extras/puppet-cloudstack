@@ -6,7 +6,6 @@
 # you will either want to significantly alter or use your own nfs class
 class cloudstack::nfs-common {
 
-  include cloudstack
 
   package {'nfs-utils':
     ensure => present
