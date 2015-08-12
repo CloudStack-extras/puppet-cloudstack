@@ -1,10 +1,10 @@
-# Class: cloudstack::nfs-common
+# Class: cloudstack::nfs_common
 #
 # this subclass provides NFS for primary and secondary storage
 # on a single machine. this is not production quality - but useful
 # for a POC/demo/dev/test environment.
 # you will either want to significantly alter or use your own nfs class
-class cloudstack::nfs-common {
+class cloudstack::nfs_common {
 
 
   package {'nfs-utils':

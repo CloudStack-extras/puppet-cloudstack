@@ -8,3 +8,7 @@ tests
 environments
 .idea
 *~
+Gemfile.lock
+.bundle
+vendor
+spec/fixtures
