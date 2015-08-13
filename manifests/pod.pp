@@ -40,6 +40,6 @@ define cloudstack::pod(
         "/usr/bin/curl \'${teststring_zone}\' | grep ${zoneid}",
         "/usr/bin/curl \'${teststring_pod}\' | grep -v ${pod}",
       ],
-      require => Exec[ 'cloud_setup_databases' ],
+      require => Exec[ 'cloudstack_setup_databases' ],
     }
 }

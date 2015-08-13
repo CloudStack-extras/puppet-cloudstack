@@ -45,6 +45,6 @@ define cloudstack::cluster(
         "/usr/bin/curl \'${teststring_pod}\' | grep ${podid}",
         "/usr/bin/curl \'${teststring_cluster}\' | grep -v ${cluster}"
       ],
-      require => Exec[ 'cloud_setup_databases' ],
+      require => Exec[ 'cloudstack_setup_databases' ],
     }
 }

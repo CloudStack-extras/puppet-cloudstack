@@ -32,6 +32,6 @@ define cloudstack::zone(
 
     exec { "/usr/bin/curl \'${reststring}\'":
       onlyif  => "/usr/bin/curl \'${teststring}\' | grep -v ${name}",
-      require => Exec[ 'cloud_setup_databases' ],
+      require => Exec[ 'cloudstack_setup_databases' ],
     }
 }
